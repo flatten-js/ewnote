@@ -3,13 +3,10 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+import page from './modules/page'
+
 export default new Vuex.Store({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
   modules: {
+    page
   }
 })
