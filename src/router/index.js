@@ -14,7 +14,7 @@ const routes = [
     path: '/page/test',
     component: () => import('@/views/Test.vue'),
     beforeEnter(to, from, next) {
-      if (store.getters['page/limit']) next('/')
+      if (store.getters['page/limit']) next('/page')
       else next()
     }
   }

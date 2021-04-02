@@ -50,6 +50,11 @@
           <v-row>
             <v-col>
               <v-data-table :headers="headers" :items="page.data">
+                <template v-slot:item.file="{ item }">
+                  <div class="text-right">
+                    <audio class="audio d-block my-2" :src="item.file | soundsPath" controls></audio>
+                  </div>
+                </template>
                 <template v-slot:item.miss="{ item }">
                   <v-simple-checkbox
                     v-model="item.miss"
@@ -76,10 +81,22 @@
   </div>
 </template>
 
+<style scoped>
+  .audio:focus {
+    outline: 0;
+  }
+</style>
+
 <script>
 import { mapGetters } from 'vuex'
 
 export default {
+  filters: {
+    soundsPath(file) {
+      return `sounds/${file}`
+    }
+  },
+
   data: () => ({
     word: "",
     meaning: "",
@@ -95,6 +112,7 @@ export default {
     headers: [
       { text: "Word", value: "word" },
       { text: "Meaning", value: "meaning" },
+      { text: "Listening", value: "file" },
       { text: "Miss", value: "miss" }
     ]
   }),
@@ -106,10 +124,14 @@ export default {
     _erase() {
       this.$refs.form.reset()
     },
-    add() {
+    async add() {
       if (!this._validate()) return
+
       const { word, meaning } = this
-      this.$store.commit('page/write', { word, meaning, miss: true })
+      const params = { text: word }
+      const { data } = await this.axios.get('/api/gcp/text-to-speech', { params })
+
+      this.$store.commit('page/write', { word, file: data.file, meaning, miss: true })
       this._erase()
     },
     test() {

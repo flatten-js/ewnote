@@ -7,48 +7,57 @@
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-col>
-          <p>({{ question.i }}) Give the meaning of the following English words</p>
-        </v-col>
-      </v-row>
-
-      <v-form ref="form">
+      <template v-if="finished">
         <v-row>
           <v-col>
-            <v-text-field
-              :value="question.word"
-              label="Word"
-              readonly
-              disabled
-            />
-            <v-text-field
-              v-model="answer"
-              label="Meaning"
-              :disabled="finished"
-              autocomplete="off"
-              required
-            />
+            <template v-for="text, i in question.text.split(',')">
+              <p :key="i">{{ text }}</p>
+            </template>
           </v-col>
         </v-row>
-      </v-form>
 
-      <v-row>
-        <v-col>
-          <v-btn :disabled="finished" @click="next">next</v-btn>
-        </v-col>
-      </v-row>
-    </v-container>
-
-    <template v-if="finished">
-      <v-container>
         <v-row>
           <v-col>
             <v-btn @click="$router.push('/page')">Return</v-btn>
           </v-col>
         </v-row>
-      </v-container>
-    </template>
+      </template>
+
+      <template v-else>
+        <v-row>
+          <v-col>
+            <p>({{ question.i }}) Give the meaning of the following English words</p>
+          </v-col>
+        </v-row>
+
+        <v-form ref="form">
+          <v-row>
+            <v-col>
+              <v-text-field
+                :value="question.word"
+                label="Word"
+                readonly
+                disabled
+              />
+              <v-text-field
+                ref="answer"
+                v-model="answer"
+                label="Meaning"
+                :disabled="finished"
+                autocomplete="off"
+                required
+              />
+            </v-col>
+          </v-row>
+        </v-form>
+
+        <v-row>
+          <v-col>
+            <v-btn :disabled="finished" @click="next">next</v-btn>
+          </v-col>
+        </v-row>
+      </template>
+    </v-container>
   </div>
 </template>
 
@@ -59,7 +68,9 @@ import utils from '@/utils'
 
 export default {
   data: () => ({
-    test: null,
+    started: false,
+
+    test: true,
     question: {},
     answers: [],
     answer: ''
@@ -71,15 +82,18 @@ export default {
 
   methods: {
     start() {
+      this.started = true
       this.test = utils.shuffle(this.page.data).entries()
       this._next()
     },
     _next() {
       this._erase()
 
-      const state = this.test.next()
-      if (state.done) return this.finish()
-      this.question = this._question(state.value)
+      const question = this.test.next()
+      if (question.done) return this.finish()
+
+      this.$refs.answer.focus()
+      this.question = this._question(question.value)
     },
     next() {
       const { question, answer } = this
@@ -102,10 +116,14 @@ export default {
       })
     },
     finish() {
-      this.test = null
-
       const answers = this._check()
       this.$store.commit('page/update', { answers })
+
+      this.test = null
+
+      this.question = {
+        text: 'All tests are complete,Please return to the Page to check the results'
+      }
     }
   },
 
@@ -114,7 +132,7 @@ export default {
       page: 'page/get'
     }),
     finished() {
-      return !this.test
+      return this.started && !this.test
     }
   }
 }
