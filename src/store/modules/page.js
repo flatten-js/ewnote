@@ -12,17 +12,24 @@ export default {
   },
 
   mutations: {
+    restore(state) {
+      const data = localStorage.getItem('page/data')
+      state.data = JSON.parse(data)
+    },
     write(state, payload) {
       state.data.push(payload)
+      localStorage.setItem('page/data', JSON.stringify(state.data))
     },
     update(state, payload) {
       state.data = state.data.map(line => {
         const answer = payload.answers.find(answer => answer.word == line.word)
         return { ...line, miss: answer.check }
       })
+      localStorage.setItem('page/data', JSON.stringify(state.data))
     },
     reset(state) {
       state.data = []
+      localStorage.removeItem('page/data')
     }
   },
 

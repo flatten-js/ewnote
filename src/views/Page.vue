@@ -1,5 +1,30 @@
 <template>
-  <div>
+  <section>
+    <v-dialog
+      content-class="v-dialog--custom"
+      v-model="dialog.restore"
+      persistent
+    >
+      <v-card>
+        <v-card-title class="headline">
+          Do you want to restore the page?
+        </v-card-title>
+        <v-card-text>
+          The last time you operated on a page, it was interrupted in the middle.
+          Please select Restore to operate the page with the previous data.
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="dialog.restore = false">
+            Cancel
+          </v-btn>
+          <v-btn color="primary" @click="restore">
+            Restore
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-container>
       <v-row>
         <v-col>
@@ -69,7 +94,8 @@
     </v-container>
 
     <v-footer fixed>
-      <v-row justify="end">
+      <v-row>
+        <v-spacer></v-spacer>
         <v-col cols="12" md="2">
           <v-btn block :disabled="limit.is" @click="test">{{ limit.display }}</v-btn>
         </v-col>
@@ -78,8 +104,18 @@
         </v-col>
       </v-row>
     </v-footer>
-  </div>
+  </section>
 </template>
+
+<style lang="scss">
+  @import '~vuetify/src/styles/styles.sass';
+
+  @media #{map-get($display-breakpoints, 'md-and-up')} {
+    .v-dialog--custom {
+      width: 50% !important;
+    }
+  }
+</style>
 
 <style scoped>
   .audio:focus {
@@ -97,7 +133,17 @@ export default {
     }
   },
 
+  mounted() {
+    if (this.page.line) return
+    if (!localStorage.getItem('page/data')) return
+    this.dialog.restore = true
+  },
+
   data: () => ({
+    dialog: {
+      restore: false
+    },
+
     word: "",
     meaning: "",
     rule: {
@@ -140,6 +186,10 @@ export default {
     next() {
       // MVP Specifications
       this.$store.commit('page/reset')
+    },
+    restore() {
+      this.dialog.restore = false
+      this.$store.commit('page/restore')
     }
   },
 
