@@ -17,7 +17,11 @@ export default {
       state.data = JSON.parse(data)
     },
     write(state, payload) {
-      state.data.push(payload)
+      const idx = state.data.findIndex(line => line.word == payload.word)
+
+      if (idx < 0) state.data.push(payload)
+      else state.data.splice(idx, 1, payload)
+      
       localStorage.setItem('page/data', JSON.stringify(state.data))
     },
     update(state, payload) {
