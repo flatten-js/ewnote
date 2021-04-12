@@ -1,101 +1,90 @@
 <template>
-  <section>
-    <v-dialog
-      content-class="v-dialog--custom"
-      v-model="dialog.restore"
-      persistent
-    >
-      <v-card>
-        <v-card-title class="headline">
-          Do you want to restore the page?
-        </v-card-title>
-        <v-card-text>
-          The last time you operated on a page, it was interrupted in the middle.
-          Please select Restore to operate the page with the previous data.
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn @click="dialog.restore = false">
-            Cancel
-          </v-btn>
-          <v-btn color="primary" @click="restore">
-            Restore
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+  <default>
+    <template #header>
+      <the-header name="Page" :user="user" />
+    </template>
 
-    <v-container>
-      <v-row>
-        <v-col>
-          <h1>Page</h1>
-        </v-col>
-      </v-row>
-
+    <template #body>
       <v-row>
         <v-col cols="12" md="6">
-          <v-row>
-            <v-col>
-              <v-form ref="form" lazy-validation>
-                <v-row>
-                  <v-col>
-                    <v-text-field
-                      v-model="word"
-                      :rules="rule.word"
-                      label="Word"
-                      autocomplete="off"
-                      required
-                    />
-                  </v-col>
-                </v-row>
+          <app-card title="Register" description>
+            <template #description>
+              If a word has more than one meaning, you can separate them with commas.
+              Also, if the word has already been registered, the meaning will be updated.
+            </template>
 
-                <v-row>
-                  <v-col>
-                    <v-text-field
-                      v-model="meaning"
-                      :rules="rule.meaning"
-                      label="Meaning"
-                      autocomplete="off"
-                      required
-                    />
-                  </v-col>
-                </v-row>
+            <v-row>
+              <v-col>
+                <v-form ref="form" lazy-validation>
+                  <v-row>
+                    <v-col>
+                      <v-text-field
+                        v-model="word"
+                        :rules="rule.word"
+                        label="Word"
+                        autocomplete="off"
+                        required
+                      />
+                    </v-col>
+                  </v-row>
 
-                <v-row>
-                  <v-col cols="12" md="4">
-                    <v-btn block @click="add">ADD</v-btn>
-                  </v-col>
-                </v-row>
-              </v-form>
-            </v-col>
-          </v-row>
+                  <v-row>
+                    <v-col>
+                      <v-text-field
+                        v-model="meaning"
+                        :rules="rule.meaning"
+                        label="Meaning"
+                        autocomplete="off"
+                        required
+                      />
+                    </v-col>
+                  </v-row>
+
+                  <v-row>
+                    <v-spacer />
+                    <v-col cols="12" md="4">
+                      <v-btn block color="primary" @click="add">ADD</v-btn>
+                    </v-col>
+                  </v-row>
+                </v-form>
+              </v-col>
+            </v-row>
+          </app-card>
         </v-col>
 
         <v-col cols="12" md="6">
-          <v-row>
-            <v-col>
-              <v-data-table :headers="headers" :items="page.data">
-                <template v-slot:item.file="{ item }">
-                  <div class="text-right">
-                    <audio class="audio d-block my-2" :src="item.file | soundsPath" controls></audio>
-                  </div>
-                </template>
-                <template v-slot:item.miss="{ item }">
-                  <v-simple-checkbox
-                    v-model="item.miss"
-                    disabled
-                  />
-                </template>
-              </v-data-table>
-            </v-col>
-          </v-row>
+          <app-card title="Data Table" description>
+            <template #description>
+              You can check the data you have registered.
+              In the "Listening" section, you can listen to the pronunciation of the words,
+              and in the "Miss" section, the results of the test will be reflected.
+            </template>
+
+            <v-row>
+              <v-col>
+                <v-data-table :headers="headers" :items="page.data">
+                  <template v-slot:item.file="{ item }">
+                    <div class="text-right">
+                      <audio class="audio d-block my-2" :src="item.file | soundsPath" controls></audio>
+                    </div>
+                  </template>
+                  <template v-slot:item.miss="{ item }">
+                    <v-simple-checkbox
+                      v-model="item.miss"
+                      disabled
+                    />
+                  </template>
+                </v-data-table>
+              </v-col>
+            </v-row>
+          </app-card>
         </v-col>
       </v-row>
-    </v-container>
+    </template>
 
-    <v-footer fixed>
-      <v-row>
-        <v-spacer></v-spacer>
+    <template #footer>
+      <v-row class="ma-0" dense>
+        <v-spacer />
         <v-col cols="12" md="2">
           <v-btn block :disabled="limit.is" @click="test">{{ limit.display }}</v-btn>
         </v-col>
@@ -103,9 +92,42 @@
           <v-btn block :disabled="!complete" @click="next">Next Page</v-btn>
         </v-col>
       </v-row>
-    </v-footer>
-  </section>
+    </template>
+
+    <template #dependence>
+      <v-dialog
+        content-class="v-dialog--custom"
+        v-model="dialog.restore"
+        persistent
+      >
+        <v-card>
+          <v-card-title class="headline">
+            Do you want to restore the page?
+          </v-card-title>
+          <v-card-text>
+            The last time you operated on a page, it was interrupted in the middle.
+            Please select Restore to operate the page with the previous data.
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn @click="dialog.restore = false">
+              Cancel
+            </v-btn>
+            <v-btn color="primary" @click="restore">
+              Restore
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </template>
+  </default>
 </template>
+
+<style scoped>
+  .audio:focus {
+    outline: 0;
+  }
+</style>
 
 <style lang="scss">
   @import '~vuetify/src/styles/styles.sass';
@@ -117,16 +139,20 @@
   }
 </style>
 
-<style scoped>
-  .audio:focus {
-    outline: 0;
-  }
-</style>
-
 <script>
 import { mapGetters } from 'vuex'
 
+import Default from '@/layouts/Default.vue'
+import TheHeader from '@/components/TheHeader.vue'
+import AppCard from '@/components/AppCard.vue'
+
 export default {
+  components: {
+    Default,
+    TheHeader,
+    AppCard
+  },
+
   filters: {
     soundsPath(file) {
       return `sounds/${file}`
@@ -140,8 +166,9 @@ export default {
   },
 
   data: () => ({
-    dialog: {
-      restore: false
+    user: {
+      name: 'Guest',
+      icon: 'https://cdn.vuetifyjs.com/images/john.png'
     },
 
     word: "",
@@ -160,7 +187,11 @@ export default {
       { text: "Meaning", value: "meaning" },
       { text: "Listening", value: "file" },
       { text: "Miss", value: "miss" }
-    ]
+    ],
+
+    dialog: {
+      restore: false
+    }
   }),
 
   methods: {
