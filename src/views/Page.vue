@@ -166,11 +166,6 @@ export default {
   },
 
   data: () => ({
-    user: {
-      name: 'Guest',
-      icon: 'https://cdn.vuetifyjs.com/images/john.png'
-    },
-
     word: "",
     meaning: "",
     rule: {
@@ -205,11 +200,15 @@ export default {
       if (!this._validate()) return
 
       const { word, meaning } = this
-      const params = { text: word }
-      const { data } = await this.axios.get('/api/gcp/text-to-speech', { params })
 
-      this.$store.commit('page/write', { word, file: data.file, meaning, miss: true })
-      this._erase()
+      this.$store.dispatch('auth/request', {
+        url: '/api/gcp/text-to-speech',
+        params: { text: word },
+        cb: ({ data }) => {
+          this.$store.commit('page/write', { word, file: data.file, meaning, miss: true })
+          this._erase()
+        }
+      })
     },
     test() {
       this.$router.push('/page/test')
@@ -226,6 +225,7 @@ export default {
 
   computed: {
     ...mapGetters({
+      user: 'auth/user',
       page: 'page/get',
       complete: 'page/complete'
     }),

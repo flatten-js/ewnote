@@ -20,7 +20,7 @@
           </v-list-item>
 
           <v-list-item>
-            <v-btn block depressed>Logout</v-btn>
+            <v-btn block depressed @click="logout">Logout</v-btn>
           </v-list-item>
         </v-list>
 
@@ -59,6 +59,12 @@ export default {
 
   data: () => ({
     drawer: true
-  })
+  }),
+
+  methods: {
+    logout() {
+      this.$store.dispatch('auth/logout')
+    }
+  }
 }
 </script>

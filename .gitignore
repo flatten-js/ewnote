@@ -3,6 +3,11 @@
 /dist
 /public/sounds
 
+# Set up the server environment variables
+srv/setup.bat
+
+# GCP credentials file
+srv/lib/gcp/credentials.json
 
 # local env files
 .env.local
