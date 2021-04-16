@@ -159,6 +159,15 @@ export default {
     }
   },
 
+  created() {
+    this.$store.dispatch('auth/request', {
+      url: '/api/user/profile',
+      cb: ({ data }) => {
+        this.$store.commit('auth/update', data)
+      }
+    })
+  },
+
   mounted() {
     if (this.page.line) return
     if (!localStorage.getItem('page/data')) return

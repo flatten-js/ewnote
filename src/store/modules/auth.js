@@ -7,13 +7,16 @@ export default {
 
   state: {
     user: {
+      id: 0,
       name: '',
-      icon: ''
+      picture: ''
     }
   },
 
   mutations: {
-    // user do
+    update(state, paylaod) {
+      state.user = { ...state.user, ...paylaod }
+    }
   },
 
   actions: {

@@ -4,6 +4,7 @@ import passport from 'passport'
 const GoogleStrategy = require('passport-google-oauth20').Strategy
 
 import jwt from './_jwt'
+import { users } from '../../lib/store'
 
 const config = {
   clientID: process.env.GOOGLE_CLIENT_ID,
@@ -12,8 +13,9 @@ const config = {
 }
 
 passport.use(
-  new GoogleStrategy(config, (accessToken, refreshToken, profile, cb) => {
-    cb(null, profile || false)
+  new GoogleStrategy(config, async (accessToken, refreshToken, profile, cb) => {
+    const user = await users.create(profile._json)
+    cb(null, user)
   })
 )
 

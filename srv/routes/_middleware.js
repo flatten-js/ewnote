@@ -11,6 +11,7 @@ export const isAuthenticated = (req, res, next) => {
 
   jwt.verify(token, (err, decode) => {
     if (err) return error(err.message)
+    req.decode = decode
     next()
   })
 }
