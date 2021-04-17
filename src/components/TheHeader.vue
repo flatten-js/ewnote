@@ -78,7 +78,7 @@ export default {
   },
 
   data: () => ({
-    drawer: true,
+    _drawer: null,
 
     items: [
       { title: 'Page', icon: 'mdi-book-open-page-variant-outline', to: '/page' }
@@ -88,6 +88,17 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch('auth/logout')
+    }
+  },
+
+  computed: {
+    drawer: {
+      get () {
+        return this.$data._drawer
+      },
+      set (state) {
+        this.$data._drawer = state
+      }
     }
   }
 }
