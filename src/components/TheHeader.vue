@@ -1,7 +1,17 @@
 <template>
   <div>
     <v-app-bar class="transparent" app absolute flat>
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-btn
+        class="mr-4"
+        color="white"
+        elevation="1"
+        :ripple="false"
+        fab
+        small
+        @click="drawer = !drawer"
+      >
+        <v-icon color="grey">mdi-dots-vertical</v-icon>
+      </v-btn>
       <v-toolbar-title>{{ name }}</v-toolbar-title>
     </v-app-bar>
 
@@ -16,6 +26,7 @@
               <v-list-item-title class="title">
                 {{ user.name }}
               </v-list-item-title>
+              <v-list-item-subtitle>Logged In</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
 
@@ -28,21 +39,30 @@
 
         <v-list nav dense>
           <v-list-item-group color="primary">
-            <v-list-item to="/page">
-              <v-list-item-icon>
-                <v-icon>mdi-note</v-icon>
-              </v-list-item-icon>
+            <template v-for="item in items">
+              <v-list-item :to="item.to" :key="item.title">
+                <v-list-item-icon>
+                  <v-icon>{{ item.icon }}</v-icon>
+                </v-list-item-icon>
 
-              <v-list-item-content>
-                <v-list-item-title>Page</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>{{ item.title }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
           </v-list-item-group>
         </v-list>
       </v-list>
     </v-navigation-drawer>
   </div>
 </template>
+
+<style scoped>
+  .v-btn::before {
+    background-color: inherit;
+    transition: all 0s;
+  }
+</style>
 
 <script>
 export default {
@@ -58,7 +78,11 @@ export default {
   },
 
   data: () => ({
-    drawer: true
+    drawer: true,
+
+    items: [
+      { title: 'Page', icon: 'mdi-book-open-page-variant-outline', to: '/page' }
+    ]
   }),
 
   methods: {
