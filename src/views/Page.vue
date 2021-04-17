@@ -42,7 +42,7 @@
 
                   <v-row>
                     <v-spacer />
-                    <v-col cols="12" md="4">
+                    <v-col cols="12" md="3">
                       <v-btn block color="primary" @click="add">ADD</v-btn>
                     </v-col>
                   </v-row>
