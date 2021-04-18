@@ -1,10 +1,12 @@
-import { pool } from '../mysql'
+import { Mysql } from './core'
 
-class Users {
-  constructor() {}
+class Users extends Mysql {
+  constructor() {
+    super()
+  }
 
   async _create({ sub, name, picture }) {
-    return await pool.query(
+    await this.query(
       `
         INSERT INTO users
           (google_id, name, picture, updated_at)
@@ -27,7 +29,7 @@ class Users {
   async find(id, provider) {
     const name = [provider, 'id'].filter(Boolean).join('_')
 
-    const [[profile]] = await pool.query(
+    return await this.exec(
       `
         SELECT
           id, name, picture
@@ -38,8 +40,6 @@ class Users {
       `,
       [id]
     )
-
-    return profile
   }
 }
 

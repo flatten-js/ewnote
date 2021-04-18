@@ -8,6 +8,6 @@ export default (app, http) => {
 
   app.use('/api/auth', require('./routes/auth'))
   app.use('/api/auth/google', require('./routes/auth/google'))
-  app.use('/api/user', require('./routes/user'))
+  app.use('/api/users', require('./routes/users'))
   app.use('/api/gcp', require('./routes/gcp'))
 }

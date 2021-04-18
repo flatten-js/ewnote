@@ -161,7 +161,7 @@ export default {
 
   created() {
     this.$store.dispatch('auth/request', {
-      url: '/api/user/profile',
+      url: '/api/users/profile',
       cb: ({ data }) => {
         this.$store.commit('auth/update', data)
       }
