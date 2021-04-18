@@ -205,7 +205,7 @@ export default {
     _erase() {
       this.$refs.form.reset()
     },
-    async add() {
+    add() {
       if (!this._validate()) return
 
       const { word, meaning } = this
@@ -223,8 +223,14 @@ export default {
       this.$router.push('/page/test')
     },
     next() {
-      // MVP Specifications
-      this.$store.commit('page/reset')
+      this.$store.dispatch('auth/request', {
+        method: 'post',
+        url: '/api/notes/add',
+        params: { page: this.page },
+        cb: () => {
+          this.$store.commit('page/reset')
+        }
+      })
     },
     restore() {
       this.dialog.restore = false

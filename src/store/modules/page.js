@@ -21,7 +21,7 @@ export default {
 
       if (idx < 0) state.data.push(payload)
       else state.data.splice(idx, 1, payload)
-      
+
       localStorage.setItem('page/data', JSON.stringify(state.data))
     },
     update(state, payload) {
