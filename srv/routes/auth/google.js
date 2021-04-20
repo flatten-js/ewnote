@@ -29,7 +29,7 @@ router.get('/callback', passport.authenticate('google', { session: false }), (re
     // secure: true
   })
 
-  res.redirect('http://localhost:8080/page')
+  res.redirect('http://localhost:8080/')
 })
 
 module.exports = router

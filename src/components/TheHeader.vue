@@ -81,6 +81,7 @@ export default {
     _drawer: null,
 
     items: [
+      { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/' },
       { title: 'Page', icon: 'mdi-book-open-page-variant-outline', to: '/page' }
     ]
   }),

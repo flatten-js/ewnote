@@ -11,6 +11,11 @@ const routes = [
     component: () => import('@/views/Login.vue')
   },
   {
+    path: '/',
+    component: () => import('@/views/Dashboard.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/page',
     component: () => import('@/views/Page.vue'),
     meta: { requiresAuth: true }
