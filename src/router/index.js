@@ -42,10 +42,20 @@ router.beforeEach(async (to, from, next) => {
 
   try {
     await store.dispatch('auth/verify')
-    next()
   } catch (err) {
-    next('/login')
+    return next('/login')
   }
+
+  if (!store.getters['auth/user'].id) {
+    await store.dispatch('auth/request', {
+      url: '/api/users/profile',
+      cb: ({ data }) => {
+        store.commit('auth/update', data)
+      }
+    })
+  }
+
+  next()
 })
 
 export default router

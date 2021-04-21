@@ -1,7 +1,7 @@
 <template>
   <default>
     <template #header>
-      <the-header name="Dashboard" />
+      <the-header name="Dashboard" :user="user" />
     </template>
 
     <template #body>
@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 import Default from '@/layouts/Default.vue'
 import TheHeader from '@/components/TheHeader.vue'
 import AppCard from '@/components/AppCard.vue'
@@ -46,6 +48,12 @@ export default {
 
   data: () => ({
     data: []
-  })
+  }),
+
+  computed: {
+    ...mapGetters({
+      user: 'auth/user'
+    })
+  }
 }
 </script>
