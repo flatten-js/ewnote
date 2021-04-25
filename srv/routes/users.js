@@ -1,8 +1,7 @@
 import express from 'express'
 
 import { isAuthenticated } from './_middleware'
-
-import { users } from '../lib/store'
+import { users } from '~srv/lib/store'
 
 const router = express.Router()
 

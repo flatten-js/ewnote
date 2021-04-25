@@ -1,8 +1,7 @@
 import express from 'express'
 
 import { isAuthenticated } from './_middleware'
-
-import { notes } from '../lib/store'
+import { notes } from '~srv/lib/store'
 
 const router = express.Router()
 

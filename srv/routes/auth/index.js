@@ -1,6 +1,6 @@
 import express from 'express'
 
-import { isAuthenticated } from '../_middleware'
+import { isAuthenticated } from '~srv/routes/_middleware'
 
 const router = express.Router()
 

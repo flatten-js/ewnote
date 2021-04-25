@@ -1,4 +1,4 @@
-import { timezone } from '../utils'
+import { timezone } from '~srv/lib/utils'
 import { Mysql } from './core'
 
 class Notes extends Mysql {

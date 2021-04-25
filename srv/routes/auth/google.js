@@ -4,7 +4,7 @@ import passport from 'passport'
 const GoogleStrategy = require('passport-google-oauth20').Strategy
 
 import jwt from './_jwt'
-import { users } from '../../lib/store'
+import { users } from '~srv/lib/store'
 
 const config = {
   clientID: process.env.GOOGLE_CLIENT_ID,

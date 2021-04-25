@@ -1,7 +1,7 @@
 import express from 'express'
 
-import * as gcp from '../lib/gcp'
 import { isAuthenticated } from './_middleware'
+import * as gcp from '~srv/lib/gcp'
 
 const router = express.Router()
 
