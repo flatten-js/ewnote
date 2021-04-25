@@ -16,6 +16,11 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/bookshelf',
+    component: () => import('@/views/Bookshelf.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/page',
     component: () => import('@/views/Page.vue'),
     meta: { requiresAuth: true }

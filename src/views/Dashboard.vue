@@ -39,9 +39,9 @@ export default {
 
   created() {
     this.$store.dispatch('auth/request', {
-      url: '/api/notes/count',
+      url: '/api/notes/daily',
       cb: ({ data }) => {
-        this.data = data.count
+        this.data = data.daily
       }
     })
   },

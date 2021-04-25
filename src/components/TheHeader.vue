@@ -82,6 +82,7 @@ export default {
 
     items: [
       { title: 'Dashboard', icon: 'mdi-view-dashboard', to: '/' },
+      { title: 'Bookshelf', icon: 'mdi-bookshelf', to: '/bookshelf' },
       { title: 'Page', icon: 'mdi-book-open-page-variant-outline', to: '/page' }
     ]
   }),

@@ -62,19 +62,7 @@
 
             <v-row>
               <v-col>
-                <v-data-table :headers="headers" :items="page.data">
-                  <template v-slot:item.file="{ item }">
-                    <div class="text-right">
-                      <audio class="audio d-block my-2" :src="item.file | soundsPath" controls></audio>
-                    </div>
-                  </template>
-                  <template v-slot:item.miss="{ item }">
-                    <v-simple-checkbox
-                      v-model="item.miss"
-                      disabled
-                    />
-                  </template>
-                </v-data-table>
+                <page-table :page="page" />
               </v-col>
             </v-row>
           </app-card>
@@ -123,12 +111,6 @@
   </default>
 </template>
 
-<style scoped>
-  .audio:focus {
-    outline: 0;
-  }
-</style>
-
 <style lang="scss">
   @import '~vuetify/src/styles/styles.sass';
 
@@ -145,18 +127,14 @@ import { mapGetters } from 'vuex'
 import Default from '@/layouts/Default.vue'
 import TheHeader from '@/components/TheHeader.vue'
 import AppCard from '@/components/AppCard.vue'
+import PageTable from '@/components/PageTable.vue'
 
 export default {
   components: {
     Default,
     TheHeader,
-    AppCard
-  },
-
-  filters: {
-    soundsPath(file) {
-      return `sounds/${file}`
-    }
+    AppCard,
+    PageTable
   },
 
   mounted() {
@@ -176,13 +154,6 @@ export default {
         v => !!v || "Meaning is required"
       ]
     },
-
-    headers: [
-      { text: "Word", value: "word" },
-      { text: "Meaning", value: "meaning" },
-      { text: "Listening", value: "file" },
-      { text: "Miss", value: "miss" }
-    ],
 
     dialog: {
       restore: false

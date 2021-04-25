@@ -6,7 +6,21 @@ class Notes extends Mysql {
     super()
   }
 
-  async count(id) {
+  async size(id) {
+    return await this.exec(
+      `
+        SELECT
+          COUNT(*) as count
+        FROM
+          notes
+        WHERE
+          user_id = ?
+      `,
+      [id]
+    )
+  }
+
+  async daily(id) {
     return await this.query(
       `
         SELECT
@@ -33,6 +47,24 @@ class Notes extends Mysql {
           (?, ?, CURRENT_TIMESTAMP)
       `,
       [id, JSON.stringify(page)]
+    )
+  }
+
+  async open(id, offset) {
+    return await this.exec(
+      `
+        SELECT
+          page
+        FROM
+          notes
+        WHERE
+          user_id = ?
+        ORDER BY
+          id
+        LIMIT
+          ?, 1
+      `,
+      [id, Number(offset)]
     )
   }
 }
