@@ -1,4 +1,5 @@
 import mysql from 'mysql2/promise'
+import { timezone } from '../../utils'
 
 const pool = mysql.createPool({
   host: process.env.MYSQL_HOST,
@@ -10,6 +11,15 @@ const pool = mysql.createPool({
 
 class Mysql {
   constructor() {}
+
+  date(name, format) {
+    return `
+      DATE_FORMAT(
+        CONVERT_TZ(${name}, 'UTC', '${timezone()}'),
+        '${format}'
+      )
+    `
+  }
 
   async query(sql, params) {
     return await pool.query(sql, params)

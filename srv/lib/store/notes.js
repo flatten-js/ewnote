@@ -10,10 +10,7 @@ class Notes extends Mysql {
     return await this.query(
       `
         SELECT
-          DATE_FORMAT(
-            CONVERT_TZ(created_at, 'UTC', '${timezone()}'),
-            '%Y-%m-%d'
-          ) as date,
+          ${this.date('created_at', '%Y-%m-%d')} as date,
           SUM(page->"$.line") as line,
           COUNT(*) as page
         FROM

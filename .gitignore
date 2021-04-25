@@ -3,6 +3,9 @@
 /dist
 /public/sounds
 
+# Layout template files
+src/layouts/*.template.vue
+
 # Set up the server environment variables
 srv/setup.bat
 

@@ -51,6 +51,8 @@ export default {
         label: {
           position: "top"
         },
+        legendMargin: [13 /* 0.8125rem */, 0, 0, 0],
+        legendHorizontalPosition: "right",
         afterLoadData: this.parser,
         // tooltip: true,
       })
