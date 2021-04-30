@@ -38,7 +38,7 @@ export default {
 
   filters: {
     soundsPath(file) {
-      return `sounds/${file}`
+      return `/sounds/${file}`
     }
   },
 

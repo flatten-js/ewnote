@@ -7,19 +7,37 @@
     <template #body>
       <v-row justify="center">
         <v-col cols="12" md="8">
-          <app-card title="Note" description>
+          <app-card title="Notes" description>
             <template #description>
               This is the notebook where I keep all the pages that passed the test.
             </template>
 
-            <page-table :page="current" />
+            <!-- <v-row>
+              <v-spacer />
+              <v-col cols="12" md="2">
+                <v-btn color="primary" block @click="new_">New</v-btn>
+              </v-col>
+            </v-row> -->
 
-            <v-pagination
-              v-model="page"
-              :length="size"
-              total-visible="7"
-              @input="selected"
-            />
+            <v-row>
+              <v-col>
+                <v-list three-line>
+                  <template v-for="(note, idx) in notes">
+                    <v-divider :key="idx" />
+                    <v-list-item :key="note.name">
+                      <v-list-item-content>
+                        <v-list-item-title class="font-weight-bold">
+                          <router-link :to="note.name | convertNotePath">{{ note.name }}</router-link>
+                        </v-list-item-title>
+                        <v-list-item-subtitle class="my-2">{{ note.description }}</v-list-item-subtitle>
+                        <v-list-item-subtitle>Updated on {{ note.updated_at }}</v-list-item-subtitle>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </template>
+                  <v-divider />
+                </v-list>
+              </v-col>
+            </v-row>
           </app-card>
         </v-col>
       </v-row>
@@ -27,46 +45,50 @@
   </default>
 </template>
 
+<style lang="scss" scoped>
+  a {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+</style>
+
 <script>
 import { mapGetters } from 'vuex'
 
 import Default from '@/layouts/Default.vue'
 import TheHeader from '@/components/TheHeader.vue'
 import AppCard from '@/components/AppCard.vue'
-import PageTable from '@/components/PageTable.vue'
 
 export default {
   components: {
     Default,
     TheHeader,
-    AppCard,
-    PageTable
+    AppCard
+  },
+
+  filters: {
+    convertNotePath(name) {
+      return `/bookshelf/${name}`
+    }
   },
 
   created() {
-    this.selected(this.page)
-    this.$store.dispatch('auth/request', {
-      url: '/api/notes/size',
-      cb: ({ data }) => {
-        this.size = data.count
-      }
-    })
+    this.all()
   },
 
   data: () => ({
-    page: 1,
-
-    current: {},
-    size: 0
+    notes: []
   }),
 
   methods: {
-    selected(i) {
+    all() {
       this.$store.dispatch('auth/request', {
-        url: '/api/notes/open',
-        params: { offset: i - 1 },
+        url: '/api/notes/all',
         cb: ({ data }) => {
-          this.current = data.page
+          this.notes = data.all
         }
       })
     }

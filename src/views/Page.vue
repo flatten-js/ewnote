@@ -97,13 +97,51 @@
             Please select Restore to operate the page with the previous data.
           </v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn @click="dialog.restore = false">
-              Cancel
-            </v-btn>
-            <v-btn color="primary" @click="restore">
-              Restore
-            </v-btn>
+            <v-row justify="end" dense>
+              <v-col cols="12" md="2">
+                <v-btn block @click="cancel('restore')">Cancel</v-btn>
+              </v-col>
+              <v-col cols="12" md="2">
+                <v-btn block color="primary" @click="restore">Restore</v-btn>
+              </v-col>
+            </v-row>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog
+        content-class="v-dialog--custom"
+        v-model="dialog.filing"
+        persistent
+      >
+        <v-card>
+          <v-card-title class="headline">
+            Filing in notebook
+          </v-card-title>
+          <v-card-text>
+            <v-select
+              v-model="select"
+              :items="notes"
+              label="Note"
+              hide-details
+            />
+          </v-card-text>
+          <v-card-actions>
+            <v-row justify="end" dense>
+              <v-col cols="12" md="2">
+                <v-btn block @click="cancel('filing')">Cancel</v-btn>
+              </v-col>
+              <v-col cols="12" md="2">
+                <v-btn
+                  color="primary"
+                  :disabled="!select"
+                  block
+                  @click="filing"
+                >
+                  Filing
+                </v-btn>
+              </v-col>
+            </v-row>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -140,7 +178,7 @@ export default {
   mounted() {
     if (this.page.line) return
     if (!localStorage.getItem('page/data')) return
-    this.dialog.restore = true
+    this.open('restore')
   },
 
   data: () => ({
@@ -156,8 +194,12 @@ export default {
     },
 
     dialog: {
-      restore: false
-    }
+      restore: false,
+      filing: false
+    },
+
+    select: null,
+    notes: []
   }),
 
   methods: {
@@ -184,19 +226,38 @@ export default {
     test() {
       this.$router.push('/page/test')
     },
+    _dialog(name, cond) {
+      this.$set(this.dialog, name, cond)
+    },
     next() {
       this.$store.dispatch('auth/request', {
+        url: '/api/notes/all',
+        cb: ({ data }) => {
+          this.notes = data.all.map(note => ({ text: note.name, value: note.id }))
+          this.open('filing')
+        }
+      })
+    },
+    open(name) {
+      this._dialog(name, true)
+    },
+    cancel(name) {
+      this._dialog(name, false)
+    },
+    filing() {
+      this.$store.dispatch('auth/request', {
         method: 'post',
-        url: '/api/notes/add',
-        params: { page: this.page },
+        url: '/api/pages/filing',
+        params: { id: this.select, page: this.page },
         cb: () => {
           this.$store.commit('page/reset')
+          this.cancel('filing')
         }
       })
     },
     restore() {
-      this.dialog.restore = false
       this.$store.commit('page/restore')
+      this.cancel('restore')
     }
   },
 

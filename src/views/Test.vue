@@ -62,7 +62,7 @@
                   <v-col cols="12" md="2">
                     <v-btn
                       type="submit"
-                      color="primary" 
+                      color="primary"
                       :disabled="finished"
                       block
                     >
@@ -137,8 +137,8 @@ export default {
     _check(answers = this.answers) {
       return answers.map(answer => {
         const line = this.page.data.find(line => line.word == answer.word)
-        const check = answer.meaning.split('、').every(meaning => {
-          return line.meaning.split('、').includes(meaning)
+        const check = answer.meaning.split(',').every(meaning => {
+          return line.meaning.split(',').includes(meaning)
         })
         return { word: line.word, check: !check }
       })

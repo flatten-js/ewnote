@@ -9,13 +9,9 @@ class Users extends Mysql {
     await this.query(
       `
         INSERT INTO users
-          (google_id, name, picture, updated_at)
+          (google_id, name, picture, created_at, updated_at)
         VALUES
-          (?, ?, ?, CURRENT_TIMESTAMP)
-        ON DUPLICATE KEY UPDATE
-          name = VALUES(name),
-          picture = VALUES(picture),
-          updated_at = VALUES(updated_at)
+          (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `,
       [sub, name, picture]
     )
@@ -23,7 +19,28 @@ class Users extends Mysql {
 
   async create(profile) {
     await this._create(profile)
-    return this.find(profile.sub, 'google')
+    return await this.find(profile.sub, 'google')
+  }
+
+  async _update({ sub, name, picture }) {
+    await this.query(
+      `
+        UPDATE
+          users
+        SET
+          name = ?,
+          picture = ?,
+          updated_at = CURRENT_TIMESTAMP
+        WHERE
+          google_id = ?
+      `,
+      [name, picture, sub]
+    )
+  }
+
+  async update(profile) {
+    await this._update(profile)
+    return await this.find(profile.sub, 'google')
   }
 
   async find(id, provider) {

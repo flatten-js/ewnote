@@ -1,4 +1,3 @@
-import { timezone } from '~srv/lib/utils'
 import { Mysql } from './core'
 
 class Notes extends Mysql {
@@ -6,47 +5,82 @@ class Notes extends Mysql {
     super()
   }
 
-  async size(id) {
-    return await this.exec(
-      `
-        SELECT
-          COUNT(*) as count
-        FROM
-          notes
-        WHERE
-          user_id = ?
-      `,
-      [id]
-    )
+  get sample() {
+    return [
+      'my-notebook',
+      'This is your first English vocabulary notebook. You can use it as is, or create a new notebook to categorize it.'
+    ]
   }
 
   async daily(id) {
     return await this.query(
       `
         SELECT
-          ${this.date('created_at', '%Y-%m-%d')} as date,
-          SUM(page->"$.line") as line,
-          COUNT(*) as page
+          pages.*
         FROM
-          notes
+          notes,
+          (
+            SELECT
+              note_id,
+              ${this.date('created_at', '%Y-%m-%d')} as date,
+              SUM(page->"$.line") as line,
+              COUNT(*) as page
+            FROM
+              pages
+            GROUP BY
+              note_id,
+              date
+          ) as pages
         WHERE
+          notes.id = pages.note_id
+        AND
           user_id = ?
-        GROUP BY
-          date
       `,
       [id]
     )
   }
 
-  async add(id, page) {
-    await this.query(
+  async all(id) {
+    return await this.query(
       `
-        INSERT INTO notes
-          (user_id, page, created_at)
-        VALUES
-          (?, ?, CURRENT_TIMESTAMP)
+        SELECT
+          id,
+          name,
+          description,
+          ${this.date('updated_at', '%Y-%m-%d')} as updated_at
+        FROM
+          notes
+        WHERE
+          user_id = ?
       `,
-      [id, JSON.stringify(page)]
+      [id]
+    )
+  }
+
+  async size(id, name) {
+    return await this.exec(
+      `
+        SELECT
+          pages.count
+        FROM
+          notes,
+          (
+            SELECT
+              note_id,
+              count(*) as count
+            FROM
+              pages
+            GROUP BY
+              note_id
+          ) as pages
+        WHERE
+          notes.id = pages.note_id
+        AND
+          user_id = ?
+        AND
+          name = ?
+      `,
+      [id, name]
     )
   }
 
@@ -54,19 +88,43 @@ class Notes extends Mysql {
     return await this.exec(
       `
         SELECT
+          notes.name,
+          notes.description,
           page
         FROM
           notes
+        LEFT JOIN
+          (
+            SELECT
+              note_id,
+              page
+            FROM
+              pages
+            ORDER BY
+              id
+          ) as pages
+        ON
+          notes.id = pages.note_id
         WHERE
           user_id = ?
-        ORDER BY
-          id
         LIMIT
           ?, 1
       `,
       [id, Number(offset)]
     )
   }
+
+  async add(id, name, description) {
+    await this.query(
+      `
+        INSERT INTO notes
+          (user_id, name, description, created_at, updated_at)
+        VALUES
+          (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      `,
+      [id, name, description]
+    )
+  }
 }
 
-export default new Notes()
+export default (new Notes())

@@ -10,5 +10,6 @@ export default (app, http) => {
   app.use('/api/auth/google', require('./routes/auth/google'))
   app.use('/api/users', require('./routes/users'))
   app.use('/api/notes', require('./routes/notes'))
+  app.use('/api/pages', require('./routes/pages'))
   app.use('/api/gcp', require('./routes/gcp'))
 }
