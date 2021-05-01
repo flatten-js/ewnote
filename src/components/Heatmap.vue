@@ -60,7 +60,8 @@ export default {
     parser({ data = [] }) {
       return data.reduce((acc, cur) => {
         const date = new Date(cur.date).getTime() / 1000
-        return { ...acc, [date]: cur.line }
+        const line = (acc[date] || 0) + cur.line
+        return { ...acc, [date]: line }
       }, {})
     }
   },

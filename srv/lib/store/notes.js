@@ -111,8 +111,8 @@ class Notes extends Mysql {
             SELECT
               note_id,
               ${this.date('created_at', '%Y-%m-%d')} as date,
-              SUM(page->"$.line") as line,
-              COUNT(*) as page
+              COUNT(*) as page,
+              SUM(page->"$.line") as line
             FROM
               pages
             GROUP BY

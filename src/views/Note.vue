@@ -10,8 +10,8 @@
           <app-card :title="name" :description="description">
             <page-table :page="current" />
             <v-pagination
-              v-model="page"
               :length="size"
+              :value="page"
               total-visible="7"
               @input="selected"
             />
@@ -41,7 +41,7 @@ export default {
   created() {
     this.name = this.$route.params.name
 
-    this.selected(this.page)
+    this.selected(1)
     this.$store.dispatch('auth/request', {
       url: '/api/notes/size',
       params: { name: this.name },
@@ -55,17 +55,20 @@ export default {
     name: '',
     description: '',
 
-    page: 1,
-
+    page: 0,
     current: {},
     size: 0
   }),
 
   methods: {
-    selected(i) {
+    selected(page) {
+      if (this.page == page) return
       this.$store.dispatch('auth/request', {
         url: '/api/notes/open',
-        params: { name: this.name, offset: i - 1 },
+        params: {
+          name: this.name,
+          offset: (this.page = page) - 1
+        },
         cb: ({ data }) => {
           this.description = data.description
           this.current = data.page || {}
