@@ -74,10 +74,10 @@
       <v-row class="ma-0" dense>
         <v-spacer />
         <v-col cols="12" md="2">
-          <v-btn block :disabled="limit.is" @click="test">{{ limit.display }}</v-btn>
+          <v-btn color="primary" block :disabled="limit.is" @click="test">{{ limit.display }}</v-btn>
         </v-col>
         <v-col cols="12" md="2">
-          <v-btn block :disabled="!complete" @click="next">Next Page</v-btn>
+          <v-btn color="primary" block :disabled="!complete" @click="next">Next Page</v-btn>
         </v-col>
       </v-row>
     </template>

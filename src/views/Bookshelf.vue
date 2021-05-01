@@ -20,7 +20,7 @@
             </v-row>
 
             <v-row class="ma-0">
-              <v-col>
+              <v-col class="px-0">
                 <v-list three-line>
                   <template v-for="(note, idx) in notes">
                     <v-divider :key="idx" />

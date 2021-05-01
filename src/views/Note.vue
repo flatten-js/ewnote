@@ -10,8 +10,8 @@
           <app-card :title="name" :description="description">
             <page-table :page="current" />
             <v-pagination
-              :length="size"
               :value="page"
+              :length="size"
               total-visible="7"
               @input="selected"
             />
@@ -27,15 +27,15 @@ import { mapGetters } from 'vuex'
 
 import Default from '@/layouts/Default.vue'
 import TheHeader from '@/components/TheHeader.vue'
-import PageTable from '@/components/PageTable.vue'
 import AppCard from '@/components/AppCard.vue'
+import PageTable from '@/components/PageTable.vue'
 
 export default {
   components: {
     Default,
     TheHeader,
-    PageTable,
-    AppCard
+    AppCard,
+    PageTable
   },
 
   created() {
@@ -56,8 +56,8 @@ export default {
     description: '',
 
     page: 0,
-    current: {},
-    size: 0
+    size: 0,
+    current: {}
   }),
 
   methods: {

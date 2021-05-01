@@ -68,6 +68,8 @@ class Notes extends Mysql {
           notes
         WHERE
           user_id = ?
+        ORDER BY
+          id
       `,
       [id]
     )
