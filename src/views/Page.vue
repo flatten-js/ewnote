@@ -97,14 +97,9 @@
             Please select Restore to operate the page with the previous data.
           </v-card-text>
           <v-card-actions>
-            <v-row justify="end" dense>
-              <v-col cols="12" md="2">
-                <v-btn block @click="cancel('restore')">Cancel</v-btn>
-              </v-col>
-              <v-col cols="12" md="2">
-                <v-btn block color="primary" @click="restore">Restore</v-btn>
-              </v-col>
-            </v-row>
+            <v-spacer />
+            <v-btn @click="cancel('restore')">Cancel</v-btn>
+            <v-btn color="primary" @click="restore">Restore</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -116,7 +111,7 @@
       >
         <v-card>
           <v-card-title class="headline">
-            Filing in notebook
+            Filing in a notebook
           </v-card-title>
           <v-card-text>
             <v-select
@@ -127,21 +122,15 @@
             />
           </v-card-text>
           <v-card-actions>
-            <v-row justify="end" dense>
-              <v-col cols="12" md="2">
-                <v-btn block @click="cancel('filing')">Cancel</v-btn>
-              </v-col>
-              <v-col cols="12" md="2">
-                <v-btn
-                  color="primary"
-                  :disabled="!select"
-                  block
-                  @click="filing"
-                >
-                  Filing
-                </v-btn>
-              </v-col>
-            </v-row>
+            <v-spacer />
+            <v-btn @click="cancel('filing')">Cancel</v-btn>
+            <v-btn
+              color="primary"
+              :disabled="!select"
+              @click="filing"
+            >
+              Filing note
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -149,12 +138,14 @@
   </default>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import '~vuetify/src/styles/styles.sass';
 
-  @media #{map-get($display-breakpoints, 'md-and-up')} {
-    .v-dialog--custom {
-      width: 50% !important;
+  ::v-deep {
+    @media #{map-get($display-breakpoints, 'md-and-up')} {
+      .v-dialog--custom {
+        width: 50% !important;
+      }
     }
   }
 </style>

@@ -12,31 +12,47 @@ class Notes extends Mysql {
     ]
   }
 
-  async daily(id) {
-    return await this.query(
+  async create(id, name, description) {
+    await this.query(
+      `
+        INSERT INTO notes
+          (user_id, name, description, created_at, updated_at)
+        VALUES
+          (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      `,
+      [id, name, description]
+    )
+  }
+
+  async open(id, name, offset) {
+    return await this.exec(
       `
         SELECT
-          pages.*
+          notes.name,
+          notes.description,
+          page
         FROM
-          notes,
+          notes
+        LEFT JOIN
           (
             SELECT
               note_id,
-              ${this.date('created_at', '%Y-%m-%d')} as date,
-              SUM(page->"$.line") as line,
-              COUNT(*) as page
+              page
             FROM
               pages
-            GROUP BY
-              note_id,
-              date
+            ORDER BY
+              id
           ) as pages
-        WHERE
+        ON
           notes.id = pages.note_id
-        AND
+        WHERE
           user_id = ?
+        AND
+          name = ?
+        LIMIT
+          ?, 1
       `,
-      [id]
+      [id, name, Number(offset)]
     )
   }
 
@@ -84,45 +100,31 @@ class Notes extends Mysql {
     )
   }
 
-  async open(id, offset) {
-    return await this.exec(
+  async daily(id) {
+    return await this.query(
       `
         SELECT
-          notes.name,
-          notes.description,
-          page
+          pages.*
         FROM
-          notes
-        LEFT JOIN
+          notes,
           (
             SELECT
               note_id,
-              page
+              ${this.date('created_at', '%Y-%m-%d')} as date,
+              SUM(page->"$.line") as line,
+              COUNT(*) as page
             FROM
               pages
-            ORDER BY
-              id
+            GROUP BY
+              note_id,
+              date
           ) as pages
-        ON
-          notes.id = pages.note_id
         WHERE
+          notes.id = pages.note_id
+        AND
           user_id = ?
-        LIMIT
-          ?, 1
       `,
-      [id, Number(offset)]
-    )
-  }
-
-  async add(id, name, description) {
-    await this.query(
-      `
-        INSERT INTO notes
-          (user_id, name, description, created_at, updated_at)
-        VALUES
-          (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-      `,
-      [id, name, description]
+      [id]
     )
   }
 }

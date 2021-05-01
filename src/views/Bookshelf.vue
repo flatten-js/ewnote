@@ -12,14 +12,14 @@
               This is the notebook where I keep all the pages that passed the test.
             </template>
 
-            <!-- <v-row>
+            <v-row>
               <v-spacer />
               <v-col cols="12" md="2">
-                <v-btn color="primary" block @click="new_">New</v-btn>
+                <v-btn color="primary" block @click="dialog = true">New</v-btn>
               </v-col>
-            </v-row> -->
+            </v-row>
 
-            <v-row>
+            <v-row class="ma-0">
               <v-col>
                 <v-list three-line>
                   <template v-for="(note, idx) in notes">
@@ -42,10 +42,55 @@
         </v-col>
       </v-row>
     </template>
+
+    <template #dependence>
+      <v-dialog
+        content-class="v-dialog--custom"
+        v-model="dialog"
+        persistent
+      >
+        <v-card>
+          <v-card-title class="headline">
+            Create a new note
+          </v-card-title>
+          <v-card-text>
+            <v-form ref="form" lazy-validation>
+              <v-text-field
+                v-model="name"
+                label="Name"
+                :rules="rule.name"
+                hint="Spaces will be replaced with hyphens to create the name"
+                @input="input"
+              />
+              <v-text-field
+                v-model="description"
+                label="Description"
+                hide-details
+              />
+            </v-form>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn @click="dialog = false">Cancel</v-btn>
+            <v-btn color="primary" @click="create">Create Note</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </template>
   </default>
 </template>
 
 <style lang="scss" scoped>
+  @import '~vuetify/src/styles/styles.sass';
+
+  ::v-deep {
+    @media #{map-get($display-breakpoints, 'md-and-up')} {
+      .v-dialog--custom {
+        width: 50% !important;
+      }
+    }
+  }
+
   a {
     text-decoration: none;
 
@@ -80,15 +125,44 @@ export default {
   },
 
   data: () => ({
-    notes: []
+    notes: [],
+
+    name: '',
+    description: '',
+    rule: {
+      name: [
+        v => !!v || "Name is required"
+      ]
+    },
+
+    dialog: false
   }),
 
   methods: {
+    _validate() {
+      return this.$refs.form.validate()
+    },
     all() {
       this.$store.dispatch('auth/request', {
         url: '/api/notes/all',
         cb: ({ data }) => {
           this.notes = data.all
+        }
+      })
+    },
+    input(name) {
+      this.name = name.split(/\s/).join('-')
+    },
+    create() {
+      if (!this._validate()) return
+
+      const { name, description } = this
+      this.$store.dispatch('auth/request', {
+        url: '/api/notes/create',
+        params: { name, description },
+        cb: () => {
+          this.dialog = false
+          this.all()
         }
       })
     }

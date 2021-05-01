@@ -7,7 +7,7 @@
     <template #body>
       <v-row justify="center">
         <v-col cols="12" xl="8">
-          <app-card :title="$route.params.name" :description="description">
+          <app-card :title="name" :description="description">
             <page-table :page="current" />
             <v-pagination
               v-model="page"
@@ -39,10 +39,12 @@ export default {
   },
 
   created() {
+    this.name = this.$route.params.name
+
     this.selected(this.page)
     this.$store.dispatch('auth/request', {
       url: '/api/notes/size',
-      params: { name: this.$route.params.name },
+      params: { name: this.name },
       cb: ({ data }) => {
         this.size = data.count
       }
@@ -50,6 +52,7 @@ export default {
   },
 
   data: () => ({
+    name: '',
     description: '',
 
     page: 1,
@@ -62,7 +65,7 @@ export default {
     selected(i) {
       this.$store.dispatch('auth/request', {
         url: '/api/notes/open',
-        params: { offset: i - 1 },
+        params: { name: this.name, offset: i - 1 },
         cb: ({ data }) => {
           this.description = data.description
           this.current = data.page || {}
