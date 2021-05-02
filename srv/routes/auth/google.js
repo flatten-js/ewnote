@@ -17,7 +17,7 @@ passport.use(
     let user = await users.find(profile.id, 'google')
     if (!user) {
       user = await users.create(profile._json)
-      await notes.add(user.id, ...notes.sample)
+      await notes.create(user.id, ...notes.sample)
     } else {
       user = await users.update(profile._json)
     }

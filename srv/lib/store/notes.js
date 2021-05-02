@@ -24,6 +24,20 @@ class Notes extends Mysql {
     )
   }
 
+  async _update(id) {
+    await this.query(
+      `
+        UPDATE
+          notes
+        SET
+          updated_at = CURRENT_TIMESTAMP
+        WHERE
+          id = ?
+      `,
+      [id]
+    )
+  }
+
   async open(id, name, offset) {
     return await this.exec(
       `
@@ -63,13 +77,13 @@ class Notes extends Mysql {
           id,
           name,
           description,
-          ${this.date('updated_at', '%Y-%m-%d')} as updated_at
+          ${this.date('updated_at', '%Y-%m-%d')} as update_date
         FROM
           notes
         WHERE
           user_id = ?
         ORDER BY
-          id
+          updated_at DESC
       `,
       [id]
     )

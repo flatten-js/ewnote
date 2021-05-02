@@ -1,11 +1,12 @@
 import { Mysql } from './core'
+import { notes } from './'
 
 class Pages extends Mysql {
   constructor() {
     super()
   }
 
-  async filing(id, page) {
+  async _filing(id, page) {
     await this.query(
       `
         INSERT INTO pages
@@ -15,6 +16,11 @@ class Pages extends Mysql {
       `,
       [id, JSON.stringify(page)]
     )
+  }
+
+  async filing(id, page) {
+    await this._filing(id, page)
+    await notes._update(id)
   }
 }
 

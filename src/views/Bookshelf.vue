@@ -30,7 +30,7 @@
                           <router-link :to="note.name | convertNotePath">{{ note.name }}</router-link>
                         </v-list-item-title>
                         <v-list-item-subtitle class="my-2">{{ note.description }}</v-list-item-subtitle>
-                        <v-list-item-subtitle>Updated on {{ note.updated_at }}</v-list-item-subtitle>
+                        <v-list-item-subtitle>Updated on {{ note.update_date }}</v-list-item-subtitle>
                       </v-list-item-content>
                     </v-list-item>
                   </template>
