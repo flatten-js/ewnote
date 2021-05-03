@@ -13,10 +13,10 @@ router.get('/create', async (req, res) => {
   res.json({})
 })
 
-router.get('/open', async (req, res) => {
-  const { name, offset } = req.query
-  const page = await notes.open(req.decode.sub, name, offset)
-  res.json(page)
+router.get('/exists', async (req, res) => {
+  const { name } = req.query
+  const exists = await notes.exists(req.decode.sub, name)
+  res.json(exists)
 })
 
 router.get('/all', async (req, res) => {
@@ -32,6 +32,12 @@ router.get('/size', async (req, res) => {
 router.get('/daily', async (req, res) => {
   const [daily] = await notes.daily(req.decode.sub)
   res.json({ daily })
+})
+
+router.get('/open', async (req, res) => {
+  const { name, offset } = req.query
+  const page = await notes.open(req.decode.sub, name, offset)
+  res.json(page)
 })
 
 module.exports = router

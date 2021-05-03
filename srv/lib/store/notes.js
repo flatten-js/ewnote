@@ -38,35 +38,19 @@ class Notes extends Mysql {
     )
   }
 
-  async open(id, name, offset) {
-    return await this.exec(
+  async exists(id, name) {
+    return this.exec(
       `
         SELECT
-          notes.name,
-          notes.description,
-          page
+          COUNT(*) as count
         FROM
           notes
-        LEFT JOIN
-          (
-            SELECT
-              note_id,
-              page
-            FROM
-              pages
-            ORDER BY
-              id
-          ) as pages
-        ON
-          notes.id = pages.note_id
         WHERE
           user_id = ?
         AND
           name = ?
-        LIMIT
-          ?, 1
       `,
-      [id, name, Number(offset)]
+      [id, name]
     )
   }
 
@@ -77,7 +61,7 @@ class Notes extends Mysql {
           id,
           name,
           description,
-          ${this.date('updated_at', '%Y-%m-%d')} as update_date
+          ${this.date('updated_at', '%b %d, %Y')} as update_date
         FROM
           notes
         WHERE
@@ -141,6 +125,38 @@ class Notes extends Mysql {
           user_id = ?
       `,
       [id]
+    )
+  }
+
+  async open(id, name, offset) {
+    return await this.exec(
+      `
+        SELECT
+          notes.name,
+          notes.description,
+          page
+        FROM
+          notes
+        LEFT JOIN
+          (
+            SELECT
+              note_id,
+              page
+            FROM
+              pages
+            ORDER BY
+              id
+          ) as pages
+        ON
+          notes.id = pages.note_id
+        WHERE
+          user_id = ?
+        AND
+          name = ?
+        LIMIT
+          ?, 1
+      `,
+      [id, name, Number(offset)]
     )
   }
 }

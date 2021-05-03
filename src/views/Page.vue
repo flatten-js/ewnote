@@ -23,7 +23,6 @@
                         :rules="rule.word"
                         label="Word"
                         autocomplete="off"
-                        required
                       />
                     </v-col>
                   </v-row>
@@ -35,7 +34,6 @@
                         :rules="rule.meaning"
                         label="Meaning"
                         autocomplete="off"
-                        required
                       />
                     </v-col>
                   </v-row>

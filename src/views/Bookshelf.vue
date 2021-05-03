@@ -60,11 +60,14 @@
                 label="Name"
                 :rules="rule.name"
                 hint="Spaces will be replaced with hyphens to create the name"
+                autocomplete="off"
                 @input="input"
+                :error-messages="error"
               />
               <v-text-field
                 v-model="description"
                 label="Description"
+                autocomplete="off"
                 hide-details
               />
             </v-form>
@@ -135,12 +138,27 @@ export default {
       ]
     },
 
+    checking: false,
+    error: '',
+
     dialog: false
   }),
 
   methods: {
+    _reset() {
+      this.$refs.form.reset()
+      this.dialog = false
+    },
     _validate() {
-      return this.$refs.form.validate()
+      const validate = this.$refs.form.validate()
+      return validate && !(this.checking || this.error)
+    },
+    _exists(cb) {
+      this.$store.dispatch('auth/request', {
+        url: '/api/notes/exists',
+        params: { name: this.name },
+        cb: ({ data }) => cb(data.count)
+      })
     },
     all() {
       this.$store.dispatch('auth/request', {
@@ -151,7 +169,17 @@ export default {
       })
     },
     input(name) {
-      this.name = name.split(/\s/).join('-')
+      this.checking = true
+      this.name = (name || '').split(/\s/).join('-')
+
+      clearTimeout(this.timeid)
+      this.timeid = setTimeout(() => {
+        this._exists(count => {
+          if (count) this.error = `The note ${this.name} already exists`
+          else this.error = ''
+          this.checking = false
+        })
+      }, 500)
     },
     create() {
       if (!this._validate()) return
@@ -161,7 +189,7 @@ export default {
         url: '/api/notes/create',
         params: { name, description },
         cb: () => {
-          this.dialog = false
+          this._reset()
           this.all()
         }
       })
