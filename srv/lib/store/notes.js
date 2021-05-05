@@ -54,6 +54,20 @@ class Notes extends Mysql {
     )
   }
 
+  async delete(id, name) {
+    await this.query(
+      `
+        DELETE FROM
+          notes
+        WHERE
+          user_id = ?
+        AND
+          name = ?
+      `,
+      [id, name]
+    )
+  }
+
   async all(id) {
     return await this.query(
       `
@@ -161,4 +175,4 @@ class Notes extends Mysql {
   }
 }
 
-export default (new Notes())
+export default new Notes()

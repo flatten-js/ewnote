@@ -215,9 +215,6 @@ export default {
     test() {
       this.$router.push('/page/test')
     },
-    _dialog(name, cond) {
-      this.$set(this.dialog, name, cond)
-    },
     next() {
       this.$store.dispatch('auth/request', {
         url: '/api/notes/all',
@@ -226,6 +223,9 @@ export default {
           this.open('filing')
         }
       })
+    },
+    _dialog(name, cond) {
+      this.$set(this.dialog, name, cond)
     },
     open(name) {
       this._dialog(name, true)

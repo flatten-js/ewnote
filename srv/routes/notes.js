@@ -14,9 +14,13 @@ router.get('/create', async (req, res) => {
 })
 
 router.get('/exists', async (req, res) => {
-  const { name } = req.query
-  const exists = await notes.exists(req.decode.sub, name)
+  const exists = await notes.exists(req.decode.sub, req.query.name)
   res.json(exists)
+})
+
+router.get('/delete', async (req, res) => {
+  await notes.delete(req.decode.sub, req.query.name)
+  res.json({})
 })
 
 router.get('/all', async (req, res) => {

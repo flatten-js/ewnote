@@ -15,7 +15,7 @@
             <v-row>
               <v-spacer />
               <v-col cols="12" md="2">
-                <v-btn color="primary" block @click="dialog = true">New</v-btn>
+                <v-btn color="primary" block @click="open('new')">New</v-btn>
               </v-col>
             </v-row>
 
@@ -32,6 +32,21 @@
                         <v-list-item-subtitle class="my-2">{{ note.description }}</v-list-item-subtitle>
                         <v-list-item-subtitle>Updated on {{ note.update_date }}</v-list-item-subtitle>
                       </v-list-item-content>
+                      <v-list-item-action>
+                        <v-menu bottom left>
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn icon v-bind="attrs" v-on="on">
+                              <v-icon>mdi-dots-vertical</v-icon>
+                            </v-btn>
+                          </template>
+
+                          <v-list>
+                            <v-list-item link @click="openDelete(note.name)">
+                              <v-list-item-title>Delete</v-list-item-title>
+                            </v-list-item>
+                          </v-list>
+                        </v-menu>
+                      </v-list-item-action>
                     </v-list-item>
                   </template>
                   <v-divider />
@@ -46,7 +61,7 @@
     <template #dependence>
       <v-dialog
         content-class="v-dialog--custom"
-        v-model="dialog"
+        v-model="dialog.new"
         persistent
       >
         <v-card>
@@ -74,8 +89,44 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn @click="dialog = false">Cancel</v-btn>
+            <v-btn @click="cancel('new')">Cancel</v-btn>
             <v-btn color="primary" @click="create">Create Note</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog
+        content-class="v-dialog--custom"
+        v-model="dialog.delete"
+        persistent
+      >
+        <v-card>
+          <v-card-title class="headline">
+            Are you absolutely sure?
+          </v-card-title>
+          <v-card-text>
+            <p>
+              This action is irreversible.
+              This will completely delete the pages and words in
+              <strong>{{ focus.original }}</strong>
+            </p>
+            <p class="ma-0">
+              To delete, type <strong>{{ focus.original }}</strong>
+            </p>
+            <v-text-field
+              v-model="focus.name"
+              autocomplete="off"
+              hide-details
+            />
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn @click="cancelDelete">Cancel</v-btn>
+            <v-btn
+              color="error"
+              :disabled="!confirmDelete"
+              @click="_delete"
+            >Delete Note</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -141,13 +192,21 @@ export default {
     checking: false,
     error: '',
 
-    dialog: false
+    focus: {
+      original: '',
+      name: ''
+    },
+
+    dialog: {
+      new: false,
+      delete: false
+    }
   }),
 
   methods: {
     _reset() {
       this.$refs.form.reset()
-      this.dialog = false
+      this.cancel('new')
     },
     _validate() {
       const validate = this.$refs.form.validate()
@@ -159,6 +218,23 @@ export default {
         params: { name: this.name },
         cb: ({ data }) => cb(data.count)
       })
+    },
+    _dialog(name, cond) {
+      this.$set(this.dialog, name, cond)
+    },
+    open(name) {
+      this._dialog(name, true)
+    },
+    cancel(name) {
+      this._dialog(name, false)
+    },
+    openDelete(name) {
+      this.$set(this.focus, 'original', name)
+      this.open('delete')
+    },
+    cancelDelete() {
+      this.focus = { original: '', name: '' }
+      this.cancel('delete')
     },
     all() {
       this.$store.dispatch('auth/request', {
@@ -193,13 +269,27 @@ export default {
           this.all()
         }
       })
+    },
+    _delete() {
+      this.$store.dispatch('auth/request', {
+        url: '/api/notes/delete',
+        params: { name: this.focus.name },
+        cb: () => {
+          this.cancelDelete()
+          this.all()
+        }
+      })
     }
   },
 
   computed: {
     ...mapGetters({
       user: 'auth/user'
-    })
+    }),
+    confirmDelete() {
+      const { focus } = this
+      return focus.name && focus.original == focus.name
+    }
   }
 }
 </script>
