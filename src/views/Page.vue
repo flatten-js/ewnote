@@ -82,7 +82,7 @@
 
     <template #dependence>
       <v-dialog
-        content-class="v-dialog--custom"
+        content-class="--restore"
         v-model="dialog.restore"
         persistent
       >
@@ -103,7 +103,7 @@
       </v-dialog>
 
       <v-dialog
-        content-class="v-dialog--custom"
+        content-class="--filing"
         v-model="dialog.filing"
         persistent
       >
@@ -140,9 +140,13 @@
   @import '~vuetify/src/styles/styles.sass';
 
   ::v-deep {
-    @media #{map-get($display-breakpoints, 'md-and-up')} {
-      .v-dialog--custom {
-        width: 50% !important;
+    @media #{map-get($display-breakpoints, 'sm-and-up')} {
+      .v-dialog {
+        &.--restore,
+        &.--filing {
+          // See Github
+          width: 448px !important;
+        }
       }
     }
   }

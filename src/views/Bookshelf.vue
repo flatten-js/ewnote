@@ -60,7 +60,7 @@
 
     <template #dependence>
       <v-dialog
-        content-class="v-dialog--custom"
+        content-class="--new"
         v-model="dialog.new"
         persistent
       >
@@ -83,7 +83,6 @@
                 v-model="description"
                 label="Description"
                 autocomplete="off"
-                hide-details
               />
             </v-form>
           </v-card-text>
@@ -96,7 +95,7 @@
       </v-dialog>
 
       <v-dialog
-        content-class="v-dialog--custom"
+        content-class="--delete"
         v-model="dialog.delete"
         persistent
       >
@@ -138,9 +137,13 @@
   @import '~vuetify/src/styles/styles.sass';
 
   ::v-deep {
-    @media #{map-get($display-breakpoints, 'md-and-up')} {
-      .v-dialog--custom {
-        width: 50% !important;
+    @media #{map-get($display-breakpoints, 'sm-and-up')} {
+      .v-dialog {
+        &.--delete,
+        &.--new {
+          // See Github
+          width: 448px !important;
+        }
       }
     }
   }
